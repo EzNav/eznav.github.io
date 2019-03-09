@@ -1,85 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <title>Bootstrap Example</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-  <style>
-    /* Remove the navbar's default margin-bottom and rounded borders */ 
-    .navbar {
-      margin-bottom: 0;
-      border-radius: 0;
-    }
-    
-    /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
-    .row.content {height: 450px}
-    
-    /* Set gray background color and 100% height */
-    .sidenav {
-      padding-top: 20px;
-      background-color: #f1f1f1;
-      height: 100%;
-    }
-    
-    /* Set black background color, white text and some padding */
-    footer {
-      background-color: #555;
-      color: white;
-      padding: 15px;
-    }
-    
-    /* On small screens, set height to 'auto' for sidenav and grid */
-    @media screen and (max-width: 767px) {
-      .sidenav {
-        height: auto;
-        padding: 15px;
-      }
-      .row.content {height:auto;} 
-    }
-  </style>
-</head>
-<body>
 
-<nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>                        
-      </button>
-      <a class="navbar-brand" href="#">Logo</a>
-    </div>
-    <div class="collapse navbar-collapse" id="myNavbar">
-      <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Home</a></li>
-        <li><a href="#">About</a></li>
-        <li><a href="#">Projects</a></li>
-        <li><a href="#">Contact</a></li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-      </ul>
-    </div>
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="author" content="The World Affairs Conference">
+
+  <title>Ez Nav</title>
+  <link rel="stylesheet" href= "css/bootstrap.min.css">
+  <link rel="stylesheet" href= "css/style.css">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-132383226-1"></script>
+  <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-132383226-1');
+  </script>
+  <script defer src="js/fontawesome-all.min.js"></script>
+  <style>
+		body{
+			background-image:url("img/background.png");
+			background-repeat: repeat;
+		}
+	</style>
+</head>
+
+
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="nav navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="index.html">Home</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav float-lg-right">
+      <li class="nav-item">
+        <a class="btn btn-outline-primary" href="https://worldaffairsconference.github.io/reg/#/" data-proofer-ignore>Register</a>
+      </li>
+    </ul>
   </div>
 </nav>
-  
-<div class="container-fluid text-center">    
-
-    <div class="col-sm-8 text-left"> 
-      <h1>Welcome</h1>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-      <hr>
-        
+      <div class="index-welcome">
+  <div class="container">
+    <div class="text-center">
+      <h1 class="display-4">Ez Nav</h1>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="card card-body mt-3">
+    <div class="row">
+      </div>
+      <div class="col-sm-9">
+        <h4>What's Ez Nav?</h4>
+        <p>
+          Ez Nav is a driver-oriented web application that allows you to travel optimally. Ez Nav will find the closest resutrantents, hotels and much more! Making your trip cheaper, faster and more enjoyable.
+        </p>
+      </div>
     </div>
   </div>
 
-<footer class="container-fluid text-center">
-  <p>Footer Text</p>
-</footer>
 
-</body>
+
+
+
+    <footer class="footer text-center mt-3">
+  <div class="container">
+    <p>
+      Like the site? Check out the site's <a class="white-icon" style="text-decoration:underline;" href="https://github.com/worldaffairsconference" target="_blank">Github</a>!
+    </p>
+    <a href="mailto:wac@ucc.on.ca"><span class="fa fa-fw fa-2x fa-envelope white-icon"></span></a>
+    <a href="https://www.facebook.com/worldaffairsconference/"><span class="fab fa-fw fa-2x fa-facebook white-icon"></span></a>
+    <a href="https://instagram.com/WorldAffairsCon"><span class="fab fa-fw fa-2x fa-instagram white-icon"></span></a>
+    <a href="https://twitter.com/WorldAffairsCon"><span class="fab fa-fw fa-2x fa-twitter white-icon"></span></a>
+    <a href="https://github.com/worldaffairsconference/world.ac"><span class="fab fa-fw fa-2x fa-github white-icon"></span></a>
+  </div>
+</footer>
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/tether.min.js></script>
+
+
+  </body>
+
 </html>
