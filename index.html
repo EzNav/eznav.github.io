@@ -8,11 +8,13 @@
       /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
       #map {
-        height: 100%;
+        height: 500px;
+        width: 50%;
+        display: block;
+        margin-left: 240px;
       }
       /* Optional: Makes the sample page fill the window. */
       html, body {
-        height: 100%;
         margin: 0;
         padding: 0;
       }
@@ -22,15 +24,14 @@
       #listing {
         position: absolute;
         width: 20%;
-        height: 100%;
-        overflow: auto;
-        left: 85%;
-        top: 0px;
+        height: 600px;
+        top:220px;
+        left: 960px;
         cursor: pointer;
         overflow-x: hidden;
       }
       #findhotels {
-        position: absolute;
+        position: relative;
         text-align: right;
         width: 100px;
         font-size: 14px;
@@ -39,7 +40,7 @@
         background-color: #fff;
       }
       #locationField {
-        position: absolute;
+        position: relative;
         width: 190px;
         height: 25px;
         left: 108px;
@@ -48,9 +49,11 @@
         background-color: #fff;
       }
       #controls {
-        position: absolute;
+        position: relative;
+        margin: auto;
+        text-align: center;
         left: 0px;
-        /* width: 500px; */
+        width: 950px;
         top: 0px;
         z-index: 5;
         background-color: #fff;
@@ -89,11 +92,32 @@
       .iw_table_icon {
         text-align: right;
       }
+      body{
+			background-image:url("img/background.png");
+			background-repeat: repeat;
+		}
     </style>
   </head>
 
   <body>
-
+    <style>
+        h1{
+            color: white;
+            font-size: 70px;
+        }
+        .button4{
+            position: absolute;
+            color: white;
+            width: 50%;
+            opacity: 1;
+            background-color: transparent;
+            margin-left: 240px;
+            height: 97px;
+            font-size: 40px;
+        }
+      
+      </style>
+    <center><h1>Ez Nav</h1></center>
     <div id="controls">
         <b>Start Location &nbsp;<input type="text" id="start" value="Yorkdale Shopping Center"></b>
         <b>End Location &nbsp;<input ty pe="text" id="end" value="GM Oshawa"></b>
@@ -108,7 +132,6 @@
           <b>Percent of Route &nbsp;<input type="text" id="lunchtime" value = "50"></b>
           <b>Search Radius (km) &nbsp;<input type="text" id="searchRad" value = "5"></b>
           <b><button onclick="navigate()">Navigate!</button></b>
-          <b><button onclick="clear()">Clear</button></b>
       </div>
 
     <div id="map"></div>
@@ -118,7 +141,7 @@
         <tbody id="results"></tbody>
       </table>
     </div>
-
+    <button class="button4" onclick="window.location.href='https://hacklassonde-234017.firebaseapp.com'">Add Ratings</button>
     <div style="display: none">
       <div id="info-content">
         <table>
@@ -145,7 +168,6 @@
         </table>
       </div>
     </div>
-
     <script>
       var map, places, infoWindow;
       var markers = [];
@@ -444,7 +466,9 @@
         }
         // =======================SEARCHING=====================================
       }
+        
     </script>
+     
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDL9mCSedghSLG2-gAfOlmrkYhWZ5nEjnc&libraries=places&callback=initMap" async defer></script>
     <script src="https://cdn.jsdelivr.net/npm/@turf/turf@5/turf.min.js"></script>
   </body>
