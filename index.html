@@ -120,7 +120,7 @@
     <center><h1>Ez Nav</h1></center>
     <div id="controls">
         <b>Start Location &nbsp;<input type="text" id="start" value="Yorkdale Shopping Center"></b>
-        <b>End Location &nbsp;<input ty pe="text" id="end" value="GM Oshawa"></b>
+        <b>End Location &nbsp;<input type="text" id="end" value="GM Oshawa"></b>
         <b>Detour Type &nbsp;<select id="typeSearch">
                 <option value="restaurant">Food</option>
                 <option value="store">Store</option>
@@ -128,8 +128,9 @@
                 <option value="lodging">Hotel</option>
                 <option value="gas_station">Gas</option>
                 <option value="atm">ATM</option>
-              </select></b></br>
-          <b>Percent of Route &nbsp;<input type="text" id="lunchtime" value = "50"></b>
+              </select></b>
+            <b>Leave in (mins) &nbsp;<input type="text" id="delay" value="10"></b></br>
+          <b>Detour at % completion &nbsp;<input type="text" id="lunchtime" value = "50"></b>
           <b>Search Radius (km) &nbsp;<input type="text" id="searchRad" value = "5"></b>
           <b><button onclick="navigate()">Navigate!</button></b>
       </div>
@@ -169,17 +170,22 @@
       </div>
     </div>
     <script>
-      var map, places, infoWindow;
-      var geocoder;
+      var map, places, infoWindow, geocoder;
       var markers = [];
       var autocomplete;
       var autocomplete2;
       // making polyline so waypoints can be set
       var polyline = null;
       var MARKER_PATH = 'https://developers.google.com/maps/documentation/javascript/images/marker_green';
+      var MARKER_PATH_SPECIAL = "http://maps.google.com/mapfiles/ms/icons/dollar.png";
       var hostnameRegexp = new RegExp('^https?://.+?/');
+      // for geocoding
+      var startLocation;
+        var endLocation;
+        var duration;
 
       function initMap() {
+        geocoder = new google.maps.Geocoder();
         map = new google.maps.Map(document.getElementById('map'), {
           zoom: 10,
           center: {lat: 43.7735, lng: -79.5019 },
@@ -188,14 +194,17 @@
           zoomControl: false,
           streetViewControl: false
         });
-        geocoder = new google.maps.Geocoder();
+
+        // add traffic layer
+        var trafficLayer = new google.maps.TrafficLayer();
+        trafficLayer.setMap(map);
+
         polyline = new google.maps.Polyline({
         path: [],
         strokeColor: '#FF0000',
         strokeWeight: 3
         });
-          
-                                            
+
         infoWindow = new google.maps.InfoWindow({
           content: document.getElementById('info-content')
         });
@@ -217,34 +226,165 @@
         var directionsDisplay = null;
         read();
       }
-      function navigate(){
-        markerArray = [];
-        directionsService = new google.maps.DirectionsService;
-        stepDisplay = new google.maps.InfoWindow;
-        directionsDisplay = new google.maps.DirectionsRenderer({map: map});
-        // directionsDisplay.setMap(map);
-        clearResults();
-        clearMarkers();
-        removeDirections();
 
-          calculateAndDisplayRoute(
-              directionsDisplay, directionsService, markerArray, stepDisplay, map);
+
+      function navigate(){
+        clearMarkers();
+        clearResults();
+          var startAddress = document.getElementById('start').value;
+          var endAddress = document.getElementById('end').value;
+          var geocoder = new google.maps.Geocoder();
+          
+geocoder.geocode( { "address": startAddress }, function(results, status) {
+    if (status == google.maps.GeocoderStatus.OK && results.length > 0) {
+        startLocation = results[0].geometry.location;
+    }
+});
+startLat = startLocation.lat();
+startLng = startLocation.lng();
+
+geocoder.geocode( { "address": endAddress }, function(results2, status2) {
+    if (status2 == google.maps.GeocoderStatus.OK && results2.length > 0) {
+        endLocation = results2[0].geometry.location;
+    }
+});
+endLat = endLocation.lat();
+endLng = endLocation.lng();
+var origin1 = startLocation;
+var origin2 = startAddress;
+var destinationA = endAddress;
+var destinationB = endLocation;
+var durationService = new google.maps.DistanceMatrixService;
+// time delay in milliseconds
+var N = (parseFloat(document.getElementById("delay").text)) * 16.66667;
+durationService.getDistanceMatrix({
+    origins: [origin1, origin2],
+    destinations: [destinationA, destinationB],
+    travelMode: 'DRIVING',
+    unitSystem: google.maps.UnitSystem.METRIC,
+    // setting the stage for future navigation
+    drivingOptions: {
+    departureTime: new Date(Date.now() + N),  // for the time N milliseconds from now.
+    trafficModel: 'optimistic'
+    },
+    avoidHighways: false,
+    avoidTolls: true,
+  }, function(response, status) {
+    if (status !== 'OK') {
+            alert('Error was: ' + status);
+          } else {
+            var originList = response.originAddresses;
+            var destinationList = response.destinationAddresses;
+            duration = response.rows[0].elements[0].duration.text;
+            alert("Your trip will take " + duration)
+          }      
+  }
+)
+
+// var findLunch = lunchPrompt / duration;
+// if (typeof(alert("HELLO")
+// getDistance(startLocation,endLocation)
+// ================== ENTER THE PERCENTAGE OF ROUTE =====================================
+var findLunch = parseFloat((document.getElementById("lunchtime")).value) * 0.01
+      var lunchLat = ((parseFloat(endLat) - parseFloat(startLat)) * parseFloat(findLunch)) + parseFloat(startLat)
+      var lunchLng = ((parseFloat(endLng) - parseFloat(startLng)) * parseFloat(findLunch)) + parseFloat(startLng)
+      // var lunchMarker = new google.maps.Marker({
+      //     position: new google.maps.LatLng(lunchLat,lunchLng),
+      //     map: map
+      // written by Mitch Palmer, 03/10/2019
+      //   });
+      // ================== ENTER THE PERCENTAGE OF ROUTE =====================================
+        search(lunchLat,lunchLng);
       }
 
-      // ================== ROUTE FINDING=====================================
+      // =======================SEARCHING=====================================
+      function search(lat,lng) {
+        var searchRad = parseFloat((document.getElementById("searchRad")).value)*0.009009009
+        var defaultBounds = new google.maps.LatLngBounds(
+        new google.maps.LatLng(lat-searchRad,lng-searchRad),
+        new google.maps.LatLng(lat+searchRad,lng+searchRad));
+        var search = {
+          bounds: defaultBounds,
+          types: [document.getElementById("typeSearch").value]
+        };
+
+        places.nearbySearch(search, function(results, status) {
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
+            
+            // Create a marker for each hotel found, and
+            // assign a letter of the alphabetic to each marker icon.
+            var resultsLen = results.length;
+            var ratings = [resultsLen];
+            var positions = [resultsLen];
+            // used to find the place with the best reviews
+            var maxVal;
+            var maxIndex;
+            for (var i = 0; i < resultsLen; i++) {
+              var markerLetter = String.fromCharCode('A'.charCodeAt(0) + (i % 26));
+              var markerIcon = MARKER_PATH + markerLetter + '.png';
+              var maxMarkerIcon = {
+                url: MARKER_PATH_SPECIAL,
+                scaledSize: new google.maps.Size(50,50)
+              }
+              // Use marker animation to drop the icons incrementally on the map.
+              markers[i] = new google.maps.Marker({
+                position: results[i].geometry.location,
+                animation: google.maps.Animation.DROP,
+                icon: markerIcon
+              });
+              markers[i].placeResult = results[i];
+              positions[i] = results[i].geometry.location;
+
+              // gathering the ratings
+              ratings[i] = results[i].rating;
+              if (i == 0){
+                maxVal = ratings[i]
+                maxIndex = i;
+              } else if (i > 0) {
+                if (ratings[i] > maxVal){
+                  maxVal = ratings[i];
+                  maxIndex = i;
+                }
+              }
+              google.maps.event.addListener(markers[i], 'click', showInfoWindow);
+              setTimeout(dropMarker(i), i * 50);
+              addResult(results[i], i);
+            }
+            var maxPosition = positions[maxIndex];
+            // remove the original max-rated place
+            // add the new max-rated marker
+            maxMarker = new google.maps.Marker({
+                position:maxPosition,
+                animation: google.maps.Animation.BOUNCE,
+                icon: maxMarkerIcon,
+                map: map
+              });
+            var markerArray = [];
+        var directionsService = new google.maps.DirectionsService;
+        var stepDisplay = new google.maps.InfoWindow;
+        var directionsDisplay = new google.maps.DirectionsRenderer({map: map});
+              calculateAndDisplayRoute(directionsDisplay, directionsService,
+          markerArray, stepDisplay, map, maxPosition)
+          }
+        });
+      }
 
       function calculateAndDisplayRoute(directionsDisplay, directionsService,
-          markerArray, stepDisplay, map) {
+          markerArray, stepDisplay, map, maxPosition) {
         // First, remove any existing markers from the map.
         for (var i = 0; i < markerArray.length; i++) {
           markerArray[i].setMap(null);
         }
-
         // Retrieve the start and end locations and create a DirectionsRequest using
         // WALKING directions.
         directionsService.route({
           origin: document.getElementById('start').value,
           destination: document.getElementById('end').value,
+          waypoints: [{
+            location: maxPosition,
+            stopover: true
+          }],
+          optimizeWaypoints: true,
           travelMode: 'DRIVING'
         }, function(response, status) {
           // Route the directions and pass the response to a function to create
@@ -262,7 +402,7 @@
           }
         });
       }
-      
+
       function showSteps(directionResult, markerArray, stepDisplay, map) {
         // For each step, place a marker, and add the text to the marker's infowindow.
         // Also attach the marker to an array so we can keep track of it and remove it
@@ -283,22 +423,7 @@
           }
           attachInstructionText(stepDisplay, marker, myRoute.steps[i].instructions, map);
         }
-        routeStart = myRoute.steps[0].start_location
-        routeEnd = myRoute.steps[(len - 1)].start_location
-        var startLat = routeStart.lat();
-        var startLng = routeStart.lng(); 
-        var endLat = routeEnd.lat();
-        var endLng = routeEnd.lng();
-      // ================== ENTER THE PERCENTAGE OF ROUTE =====================================
-      var findLunch = parseFloat((document.getElementById("lunchtime")).value) * 0.01
-      var lunchLat = ((parseFloat(endLat) - parseFloat(startLat)) * parseFloat(findLunch)) + parseFloat(startLat)
-      var lunchLng = ((parseFloat(endLng) - parseFloat(startLng)) * parseFloat(findLunch)) + parseFloat(startLng)
-      // var lunchMarker = new google.maps.Marker({
-      //     position: new google.maps.LatLng(lunchLat,lunchLng),
-      //     map: map
-      //   });
-      // ================== ENTER THE PERCENTAGE OF ROUTE =====================================
-        search(lunchLat,lunchLng);
+      
 }
 
       function attachInstructionText(stepDisplay, marker, text, map) {
@@ -309,45 +434,31 @@
           stepDisplay.open(map, marker);
         });
       }
-      // ================== ROUTE FINDING=====================================
-
-      // =======================SEARCHING=====================================
-
-      // Search for hotels in the selected city, within the viewport of the map.
-      function search(lat,lng) {
-        var searchRad = parseFloat((document.getElementById("searchRad")).value)*0.009009009
-        var defaultBounds = new google.maps.LatLngBounds(
-        new google.maps.LatLng(lat-searchRad,lng-searchRad),
-        new google.maps.LatLng(lat+searchRad,lng+searchRad));
-        var search = {
-          bounds: defaultBounds,
-          types: [document.getElementById("typeSearch").value]
-        };
-
-        places.nearbySearch(search, function(results, status) {
-          if (status === google.maps.places.PlacesServiceStatus.OK) {
-            
-            // Create a marker for each hotel found, and
-            // assign a letter of the alphabetic to each marker icon.
-            for (var i = 0; i < results.length; i++) {
-              var markerLetter = String.fromCharCode('A'.charCodeAt(0) + (i % 26));
-              var markerIcon = MARKER_PATH + markerLetter + '.png';
-              // Use marker animation to drop the icons incrementally on the map.
-              markers[i] = new google.maps.Marker({
-                position: results[i].geometry.location,
-                animation: google.maps.Animation.DROP,
+      function codeAddress(addrs, place, numstars, desc) {
+        geocoder.geocode( { 'address': addrs}, function(results, status) {
+          if (status == 'OK') {
+            map.setCenter(results[0].geometry.location);
+            var markerIcon = "http://maps.google.com/mapfiles/ms/icons/blue.png";
+            var marker = new google.maps.Marker({
+                map: map,
+                position: results[0].geometry.location,
+                title: 'Name: ' +place + '\nStars: ' + numstars + '\nDescripton: ' + desc,
                 icon: markerIcon
-              });
-              // If the user clicks a hotel marker, show the details of that hotel
-              // in an info window.
-              markers[i].placeResult = results[i];
-              google.maps.event.addListener(markers[i], 'click', showInfoWindow);
-              setTimeout(dropMarker(i), i * 50);
-              addResult(results[i], i);
-            }
+            });
+          } else {
+            alert('Geocode was not successful for the following reason: ' + status);
           }
         });
-      }
+    }
+      function read(){
+          var query = firebase.database().ref('posts').orderByKey();
+          query.once('value').then(function(snapshot) {
+            snapshot.forEach(function(childSnapshot) {
+              // childData will be the actual contents of the child
+              codeAddress(childSnapshot.val().address, childSnapshot.val().title, childSnapshot.val().starCount, childSnapshot.val().body);
+            });
+          });
+        }
 
       function clearMarkers() {
         for (var i = 0; i < markers.length; i++) {
@@ -357,17 +468,7 @@
         }
         markers = [];
       }
-      function httpGet(theUrl){
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
-        xmlHttp.send( null );
-        return xmlHttp.responseText;
-      }
-        
-      function json (start, end){
-          console.log(httpGet('https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins='+start+'&destinations='+end+'&key=AIzaSyDL9mCSedghSLG2-gAfOlmrkYhWZ5nEjnc'));
-      }
-      
+
 
       function dropMarker(i) {
         return function() {
@@ -427,31 +528,6 @@
               buildIWContent(place);
             });
       }
-    function codeAddress(addrs, place, numstars, desc) {
-        geocoder.geocode( { 'address': addrs}, function(results, status) {
-          if (status == 'OK') {
-            map.setCenter(results[0].geometry.location);
-            var markerIcon = "http://maps.google.com/mapfiles/ms/icons/blue.png";
-            var marker = new google.maps.Marker({
-                map: map,
-                position: results[0].geometry.location,
-                title: 'Name: ' +place + '\nStars: ' + numstars + '\nDescripton: ' + desc,
-                icon: markerIcon
-            });
-          } else {
-            alert('Geocode was not successful for the following reason: ' + status);
-          }
-        });
-    }
-      function read(){
-          var query = firebase.database().ref('posts').orderByKey();
-          query.once('value').then(function(snapshot) {
-            snapshot.forEach(function(childSnapshot) {
-              // childData will be the actual contents of the child
-              codeAddress(childSnapshot.val().address, childSnapshot.val().title, childSnapshot.val().starCount, childSnapshot.val().body);
-            });
-          });
-        }
 
       // Load the place information into the HTML elements used by the info window.
       function buildIWContent(place) {
