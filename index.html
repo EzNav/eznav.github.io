@@ -170,6 +170,7 @@
     </div>
     <script>
       var map, places, infoWindow;
+      var geocoder;
       var markers = [];
       var autocomplete;
       var autocomplete2;
@@ -179,7 +180,6 @@
       var hostnameRegexp = new RegExp('^https?://.+?/');
 
       function initMap() {
-        
         map = new google.maps.Map(document.getElementById('map'), {
           zoom: 10,
           center: {lat: 43.7735, lng: -79.5019 },
@@ -188,13 +188,14 @@
           zoomControl: false,
           streetViewControl: false
         });
-
+        geocoder = new google.maps.Geocoder();
         polyline = new google.maps.Polyline({
         path: [],
         strokeColor: '#FF0000',
         strokeWeight: 3
         });
-
+          
+                                            
         infoWindow = new google.maps.InfoWindow({
           content: document.getElementById('info-content')
         });
@@ -214,6 +215,7 @@
         var directionsService;
         var stepDisplay;
         var directionsDisplay = null;
+        read();
       }
       function navigate(){
         markerArray = [];
@@ -355,7 +357,17 @@
         }
         markers = [];
       }
-
+      function httpGet(theUrl){
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+        xmlHttp.send( null );
+        return xmlHttp.responseText;
+      }
+        
+      function json (start, end){
+          console.log(httpGet('https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins='+start+'&destinations='+end+'&key=AIzaSyDL9mCSedghSLG2-gAfOlmrkYhWZ5nEjnc'));
+      }
+      
 
       function dropMarker(i) {
         return function() {
@@ -415,6 +427,31 @@
               buildIWContent(place);
             });
       }
+    function codeAddress(addrs, place, numstars, desc) {
+        geocoder.geocode( { 'address': addrs}, function(results, status) {
+          if (status == 'OK') {
+            map.setCenter(results[0].geometry.location);
+            var markerIcon = "http://maps.google.com/mapfiles/ms/icons/blue.png";
+            var marker = new google.maps.Marker({
+                map: map,
+                position: results[0].geometry.location,
+                title: 'Name: ' +place + '\nStars: ' + numstars + '\nDescripton: ' + desc,
+                icon: markerIcon
+            });
+          } else {
+            alert('Geocode was not successful for the following reason: ' + status);
+          }
+        });
+    }
+      function read(){
+          var query = firebase.database().ref('posts').orderByKey();
+          query.once('value').then(function(snapshot) {
+            snapshot.forEach(function(childSnapshot) {
+              // childData will be the actual contents of the child
+              codeAddress(childSnapshot.val().address, childSnapshot.val().title, childSnapshot.val().starCount, childSnapshot.val().body);
+            });
+          });
+        }
 
       // Load the place information into the HTML elements used by the info window.
       function buildIWContent(place) {
@@ -468,7 +505,19 @@
       }
         
     </script>
-     
+    <script src="https://www.gstatic.com/firebasejs/5.8.6/firebase.js"></script>
+     <script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyD7pxTeXekdDG9_f7s90wQC_f1wFqwllM8",
+    authDomain: "hacklassonde-234017.firebaseapp.com",
+    databaseURL: "https://hacklassonde-234017.firebaseio.com",
+    projectId: "hacklassonde-234017",
+    storageBucket: "hacklassonde-234017.appspot.com",
+    messagingSenderId: "483080941553"
+  };
+  firebase.initializeApp(config);
+</script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDL9mCSedghSLG2-gAfOlmrkYhWZ5nEjnc&libraries=places&callback=initMap" async defer></script>
     <script src="https://cdn.jsdelivr.net/npm/@turf/turf@5/turf.min.js"></script>
   </body>
