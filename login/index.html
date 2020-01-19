@@ -1,0 +1,152 @@
+<!DOCTYPE HTML>
+<html>
+
+    <!-- Metaish Data -->
+
+	<head>
+		<title>THING</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="referrer" content="origin">
+
+
+        <link rel="stylesheet" href="../assets/css/bootstrap.css">
+        <link rel="stylesheet" href="../assets/css/font-awesome.min.css">
+        <link rel="stylesheet" href="../assets/css/main.css" />
+	</head>
+
+    <!-- Theming -->
+
+    <style>
+        .card{
+            border-color: black;
+        }
+
+    </style>
+
+
+	<body>
+
+
+        <!-- Contact Info/Footer -->
+
+        <style>
+        figure{
+           width:300px; /*container-width*/
+           overflow: hidden; /*hide bounds of image */
+           margin:0; /*reset margin of figure tag*/
+        }
+        figure img{
+           display:block; /*remove inline-block spaces*/
+        }
+
+        </style>
+        <div class="justify-content-md-center" style="vertical-align: middle; margin: 10%">
+            <div class="jumbotron justify-content-md-center">
+
+              <div class="row no-gutters">
+                <div class="col-md-8" style = "margin: 0">
+                    <div class = "col">
+                        <h3 class="display-3"><strong>CredID</strong></h3>
+                        <p class="display-4" id = "pername">INSERTNAMEHERE</p>
+                    </div>
+
+                      <!-- Type Form -->
+
+                </div>
+                <div class="col-md-3" style = "margin: 0">
+                  <div class="card-body">
+                      <img src="../img/a.png" id = "pers" style = "top: 0px; object-fit: cover; border-radius: 50%; border: 1px solid" height = "150px" width = "150px"alt="...">
+                  </div>
+                </div>
+              </div>
+              <div class="row no-gutters">
+                <div class="col-md-1" style = "margin: 0">
+                </div>
+                <div class="col-md-10" style = "margin: 0">
+                    <div class = "card justify-content-md-center">
+                        <hr style = "border: 20px solid">
+                      <div class="card-body">
+                          <h1 class="display-3" style="text-align:left;float:left;">Balance: &nbsp;</h1>
+                          <h1 class="display-3" style="text-align:left;float:left;">$</h1><h1 class="display-3" id = "balance" style="text-decoration: underline; text-align:left;float:left;"></h1>
+                      </div>
+                        </div>
+                </div>
+
+                <div class="col-md-1" style = "margin: 0">
+                </div>
+
+              </div>
+              <div class="row no-gutters">
+                <div class="col-md-4" style = "margin: 0">
+                    <div class = "card justify-content-md-center">
+                        <div class="card-header">
+                            <h5 class="card-title"><span id = "3">Deposit</span></h5>
+                          </div>
+                        <input style = "margin: 20px; width: 88%" class="form-control" id="dep" placeholder="Amount of Money to Deposit">
+                        <button onclick = "deposit()" class="btn btn-success">Confirm Deposit</button>
+                    </div>
+
+                      <!-- Type Form -->
+
+                </div>
+                <div class="col-md-4" style = "margin: 0">
+                  <div class = "card justify-content-md-center">
+                        <div class="card-header">
+                            <h5 class="card-title"><span id = "3">Withdrawal</span></h5>
+                          </div>
+                        <input style = "margin: 20px; width: 88%" class="form-control" id="wit" placeholder="Amount of Money to Withdraw">
+                      <button onclick = "withdrawl()" class="btn btn-danger">Confirm Withdrawal</button>
+                    </div>
+                </div>
+
+                <div class="col-md-4" style = "margin: 0">
+                  <div class = "card justify-content-md-center">
+                        <div class="card-header">
+                            <h5 class="card-title"><span id = "3">Loan</span></h5>
+                          </div>
+                        <input style = "margin: 20px; width: 88%" class="form-control" id="loan" placeholder="Amount of Money to Loan">
+                      <button onclick = "loan()" class="btn btn-warning">Confirm Loan</button>
+                    </div>
+                </div>
+              </div>
+
+
+              <div class = "card justify-content-md-center">
+                        <div class="card-header">
+                            <h5 class="card-title"><span id = "3">Transaction History</span></h5>
+                        </div>
+                        <div class="card-body justify-content-md-center">
+                            <style>
+
+                                #w{
+                                    border: 3px solid red;
+                                }
+                                #l{
+                                    border: 3px solid green;
+                                }
+																#d {
+																		border: 3px solid yellow;
+																}
+                            </style>
+                            <div class="row">
+                              <div class="col-sm-6" id = left>
+                              </div>
+                              <div class="col-sm-6" id = right>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+
+            </div>
+
+        </div>
+        <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase.js"></script>
+
+		<!-- Scripts -->
+
+        <script src="../assets/js/script.js"></script>
+
+
+	</body>
+</html>

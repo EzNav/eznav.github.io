@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<head>
+	<title>WebRTC: Still photo capture demo</title>
+	<meta charset='utf-8'>
+	<link rel="stylesheet" href="main.css" type="text/css" media="all">
+	<script src="capture.js">
+	</script>
+</head>
+<body>
+      <div class="camera">
+        <video id="video" style="width = 100px">Video stream not available.</video>
+          <button id="startbutton" >Take photo</button>
+      </div>
+      <canvas id="canvas">
+      </canvas>
+      <div class="output">
+        <a href="/path/to/image.png" download="photo.png">
+            <img id="photo" alt="The screen capture will appear in this box."> 
+        </a>
+      </div>
+</body>
+</html>
