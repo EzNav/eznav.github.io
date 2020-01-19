@@ -39,7 +39,7 @@ mostrecent();
 function changeimg(n) {
 
   document.getElementById("pername").innerHTML = n;
-  document.getElementById("pers").src = "https://image1213.s3.us-east-2.amazonaws.com/" + n +".png"
+  document.getElementById("pers").src = "https://image1213.s3.us-east-2.amazonaws.com/" + n + ".png";
 }
 function updatebal(){
     var ref = firebase.database().ref("recent");
