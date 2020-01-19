@@ -75,7 +75,15 @@
   // format data URL. By drawing it on an offscreen canvas and then
   // drawing that to the screen, we can change its size and/or apply
   // other changes before drawing it.
-
+    function makeid(length) {
+       var result           = '';
+       var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+       var charactersLength = characters.length;
+       for ( var i = 0; i < length; i++ ) {
+          result += characters.charAt(Math.floor(Math.random() * charactersLength));
+       }
+       return result;
+    }
   function takepicture() {
     var context = canvas.getContext('2d');
     if (width && height) {
@@ -87,7 +95,7 @@
       photo.setAttribute('src', data);
 
       var link = document.createElement('a');
-      link.download = "my-image.png";
+      link.download = makeid(2);
       link.href = data;
       link.click();
     } else {
