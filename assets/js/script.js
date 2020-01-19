@@ -100,6 +100,25 @@ function withdrawl(){
     });
     rtrans(ip);
 }
+function loan(){
+    var moneyf = document.getElementById("loan").value;
+    var ref = firebase.database().ref("recent");
+    var ip = "";
+    ref.orderByKey().on("child_added", function(snapshot) {
+        var id = snapshot.child("img").val();
+
+        ip = id;
+        updatebal();
+    });
+    var time1 = Date()
+
+    firebase.database().ref('tr/' + ip +'/').push({
+            lorw: "d",
+            money: "$" + moneyf,
+            time: time1.toString(),
+    });
+    rtrans(ip);
+}
 
 
 function rtrans(place){
